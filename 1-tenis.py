@@ -47,3 +47,44 @@ def imprimir_marcador(sets, juegos, puntajes, jugadores):
 def imprimir_estado_del_saque(saque, jugadores):
     """Imprime quién tiene el saque."""
     print(f"Saque: {jugadores[saque]}")
+
+def verificar_cambio_de_cancha(juegos):
+    """Determina si se debe realizar un cambio de cancha."""
+    return (juegos[0] + juegos[1]) % 2 != 0
+
+def main():
+    jugadores = [solicitar_entrada("Nombre del Jugador 1: "), solicitar_entrada("Nombre del Jugador 2: ")]
+    sets = [0, 0]
+    juegos = [0, 0]
+    puntajes = [0, 0]
+    saque = 0  # El jugador 1 comienza sacando
+
+    while sets[0] < 2 and sets[1] < 2:
+        ganador_juego = False
+        puntajes = [0, 0]  # Resetear puntajes para el nuevo juego
+
+        while not ganador_juego:
+            imprimir_estado_del_saque(saque, jugadores)
+            imprimir_marcador(sets, juegos, puntajes, jugadores)
+            
+            ganador_punto = solicitar_ganador_punto(f"Quién gana el punto? (1: {jugadores[0]}, 2: {jugadores[1]}): ", jugadores)
+            ganador_juego = actualizar_puntaje(puntajes, ganador_punto)
+            
+            if ganador_juego:
+                juegos[ganador_punto] += 1
+                puntajes = [0, 0]  # Resetear puntajes para el nuevo juego
+                if juegos[ganador_punto] >= 6 and (juegos[ganador_punto] - juegos[1 - ganador_punto] >= 2) or (juegos[ganador_punto] == 7):
+                    sets[ganador_punto] += 1
+                    juegos = [0, 0]  # Resetear juegos para el nuevo set
+                
+                saque = 1 - saque  # Alternar el saque para el próximo juego
+                
+                if (juegos[0] + juegos[1]) % 2 != 0:
+                    print("Cambio de cancha.")
+                    
+                if sets[0] == 2 or sets[1] == 2:  # Verificar si hay ganador del partido
+                    print(f"Partido terminado. {jugadores[ganador_punto]} gana el partido {sets[0]} sets a {sets[1]}.")
+                    return
+
+if __name__ == "__main__":
+    main()
