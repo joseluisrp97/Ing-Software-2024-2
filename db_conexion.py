@@ -1,4 +1,7 @@
 import pymysql
+import faker
+import secrets
+import random
 from pymysql import MySQLError
 from contextlib import closing
 from datetime import datetime, timedelta
@@ -8,38 +11,73 @@ db_params = {
     'host': 'localhost',
     'user': 'lab',
     'password': 'Developer123!',
-    'db': 'lab_ing_software'
+    'db': 'lab_ing_software' ,
+    'charset': 'utf8mb4'
 }
+fake = faker.Faker()
+generos_peliculas = ['Acción', 'Comedia', 'Drama', 'Fantasía', 'Horror', 'Misterio', 'Romance', 'Ciencia Ficción', 'Documental']
 
-def insertar_usuario(nombre, password, email, superUser):
+def insertar_registros():
     try:
         with closing(pymysql.connect(**db_params)) as conn:
             with conn.cursor() as cursor:
-                sql = "INSERT INTO usuarios (nombre, password, email, superUser) VALUES (%s, %s, %s, %s)"
-                cursor.execute(sql, (nombre, password, email, superUser))
+                # Generar un nombre, email y contraseña aleatorios
+                nombre_aleatorio = fake.name()  # Genera un nombre completo aleatorio
+                email_aleatorio = f"{nombre_aleatorio.split(' ')[0].lower()}.{datetime.now().strftime('%Y%m%d%H%M%S')}@example.com"
+                password_aleatorio = secrets.token_hex(8)  # Genera una contraseña aleatoria segura
+
+                # Insertar un usuario con los datos aleatorios
+                sql_usuario = "INSERT INTO usuarios (nombre, password, email, superUser) VALUES (%s, %s, %s, %s)"
+                cursor.execute(sql_usuario, (nombre_aleatorio, password_aleatorio, email_aleatorio, 0))
+                id_usuario = cursor.lastrowid
+
+                genero_aleatorio = random.choice(generos_peliculas)
+
+                # Insertar una película (ajusta estos valores según sea necesario)
+                sql_pelicula = "INSERT INTO peliculas (nombre, genero, duracion, inventario) VALUES (%s, %s, %s, %s)"
+                cursor.execute(sql_pelicula, (fake.word().capitalize(), genero_aleatorio, 120, 10))
+                id_pelicula = cursor.lastrowid
+
+                # Suponiendo que las columnas se llaman id_usuario e id_pelicula en la tabla rentas
+                # Insertar una renta
+                sql_renta = "INSERT INTO rentar (idUsuario, idPelicula, fecha_renta) VALUES (%s, %s, NOW())"
+                cursor.execute(sql_renta, (id_usuario, id_pelicula))
+
                 conn.commit()
     except MySQLError as e:
-        print(f"Error al insertar usuario: {e}")
+        print(f"Error al insertar registros: {e}")
 
-def insertar_pelicula(nombre, genero, duracion, inventario):
+def filtrar_usuarios_por_apellido(apellido):
     try:
         with closing(pymysql.connect(**db_params)) as conn:
             with conn.cursor() as cursor:
-                sql = "INSERT INTO peliculas (nombre, genero, duracion, inventario) VALUES (%s, %s, %s, %s)"
-                cursor.execute(sql, (nombre, genero, duracion, inventario))
-                conn.commit()
+                sql = "SELECT * FROM usuarios WHERE nombre LIKE %s"
+                cursor.execute(sql, ('%' + apellido,))
+                resultados = cursor.fetchall()
+                for usuario in resultados:
+                    print(usuario)
     except MySQLError as e:
-        print(f"Error al insertar película: {e}")
+        print(f"Error al filtrar usuarios por apellido: {e}")
 
-def cambiar_genero_pelicula(idPelicula, nuevo_genero):
+
+def cambiar_genero_pelicula_por_nombre(nombre_pelicula, nuevo_genero):
     try:
         with closing(pymysql.connect(**db_params)) as conn:
             with conn.cursor() as cursor:
-                sql = "UPDATE peliculas SET genero = %s WHERE idPelicula = %s"
-                cursor.execute(sql, (nuevo_genero, idPelicula))
-                conn.commit()
+                # Primero, encontrar el ID de la película por su nombre
+                sql_buscar = "SELECT idPelicula FROM peliculas WHERE nombre = %s"
+                cursor.execute(sql_buscar, (nombre_pelicula,))
+                pelicula = cursor.fetchone()
+                if pelicula:
+                    # Cambiar el género de la película
+                    sql_actualizar = "UPDATE peliculas SET genero = %s WHERE idPelicula = %s"
+                    cursor.execute(sql_actualizar, (nuevo_genero, pelicula[0]))
+                    conn.commit()
+                else:
+                    print("Película no encontrada.")
     except MySQLError as e:
         print(f"Error al cambiar género de la película: {e}")
+
 
 def eliminar_rentas_antiguas():
     try:
@@ -53,7 +91,7 @@ def eliminar_rentas_antiguas():
         print(f"Error al eliminar rentas antiguas: {e}")
 
 # Ejemplo de uso de las funciones
-insertar_usuario('Juan Perez', 'pass123', 'juan.perez@example.com', 0)
-insertar_pelicula('Inception', 'Ciencia Ficción', 148, 5)
-cambiar_genero_pelicula(1, 'Acción')
+insertar_registros()
+filtrar_usuarios_por_apellido('ez')
+cambiar_genero_pelicula_por_nombre('Inception', 'Accion')
 eliminar_rentas_antiguas()
