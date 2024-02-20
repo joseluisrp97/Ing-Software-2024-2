@@ -40,3 +40,16 @@ CREATE TABLE `rentar` (
   CONSTRAINT `idPelicula` FOREIGN KEY (`idPelicula`) REFERENCES `peliculas` (`idPelicula`),
   CONSTRAINT `idUsuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Alters para elminar en cascada
+ALTER TABLE `rentar`
+DROP FOREIGN KEY `idUsuario`,
+ADD CONSTRAINT `idUsuario2`
+FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`)
+ON DELETE CASCADE;
+
+ALTER TABLE `rentar`
+DROP FOREIGN KEY `idPelicula`,
+ADD CONSTRAINT `idPelicula2`
+FOREIGN KEY (`idPelicula`) REFERENCES `peliculas` (`idPelicula`)
+ON DELETE CASCADE; 
