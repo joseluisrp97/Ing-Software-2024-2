@@ -1,21 +1,24 @@
+# Importar los módulos necesarios y clases de SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+# Importar clases de modelo desde el módulo models
 from models.usuarios import Base, Usuario
 from models.peliculas import Pelicula
 from models.rentar import Rentar
 
-# Configuración de la conexión a la base de datos
+# Configuración para la conexión a la base de datos
 DATABASE_URL = "mysql+pymysql://lab:Developer123!@localhost/lab_ing_software"
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
-# Creación de la sesión
+# Crear una sesión
 session = Session()
 
+# Función para ver registros en una tabla
 def ver_registros():
     print("\nSeleccione la tabla para ver registros:")
     print("1. Usuarios")
-    print("2. Peliculas")
+    print("2. Películas")
     print("3. Rentar")
     tabla = input("Seleccione una opción: ")
 
@@ -34,10 +37,11 @@ def ver_registros():
     else:
         print("Opción no válida.")
 
+# Función para filtrar registros por ID
 def filtrar_por_id():
     print("\nSeleccione la tabla para filtrar por ID:")
     print("1. Usuarios")
-    print("2. Peliculas")
+    print("2. Películas")
     print("3. Rentar")
     tabla = input("Seleccione una opción: ")
     id_seleccionado = input("Ingrese el ID: ")
@@ -57,11 +61,11 @@ def filtrar_por_id():
     except Exception as e:
         print(f"Error al filtrar registros: {e}")
 
-
+# Función para actualizar un registro
 def actualizar_registro():
     print("\nSeleccione la tabla para actualizar un registro:")
     print("1. Usuarios")
-    print("2. Peliculas")
+    print("2. Películas")
     print("3. Rentar")
     tabla = input("Seleccione una opción: ")
     id_seleccionado = input("Ingrese el ID del registro a actualizar: ")
@@ -99,11 +103,11 @@ def actualizar_registro():
     else:
         print("Opción no válida.")
 
-
+# Función para eliminar un registro
 def eliminar_registro():
     print("\nSeleccione la tabla para eliminar registros:")
     print("1. Usuarios")
-    print("2. Peliculas")
+    print("2. Películas")
     print("3. Rentar")
     tabla = input("Seleccione una opción: ")
 
@@ -142,10 +146,10 @@ def eliminar_registro():
     else:
         print("Opción no válida.")
 
-
+# Función para mostrar el menú y manejar las opciones
 def menu():
     while True:
-        print("\nMenu:")
+        print("\nMenú:")
         print("1. Ver registros de una tabla")
         print("2. Filtrar registros por ID")
         print("3. Actualizar un registro")
@@ -170,5 +174,5 @@ def menu():
 if __name__ == "__main__":
     menu()
 
-# No olvides cerrar la sesión cuando hayas terminado
+# Se cierra la sesión
 session.close()

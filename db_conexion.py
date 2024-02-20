@@ -14,9 +14,13 @@ db_params = {
     'db': 'lab_ing_software' ,
     'charset': 'utf8mb4'
 }
+# Faker usado para generar nombres aletorios.
+# Secrets para hacer una contraseña
+# Random para seleccionar un género random
 fake = faker.Faker()
 generos_peliculas = ['Acción', 'Comedia', 'Drama', 'Fantasía', 'Horror', 'Misterio', 'Romance', 'Ciencia Ficción', 'Documental']
 
+# Función para insertar 3 registros, uno por tabla, de una vez
 def insertar_registros():
     try:
         with closing(pymysql.connect(**db_params)) as conn:
@@ -33,12 +37,11 @@ def insertar_registros():
 
                 genero_aleatorio = random.choice(generos_peliculas)
 
-                # Insertar una película (ajusta estos valores según sea necesario)
+                # Insertar una película con genero aleatorio
                 sql_pelicula = "INSERT INTO peliculas (nombre, genero, duracion, inventario) VALUES (%s, %s, %s, %s)"
                 cursor.execute(sql_pelicula, (fake.word().capitalize(), genero_aleatorio, 120, 10))
                 id_pelicula = cursor.lastrowid
 
-                # Suponiendo que las columnas se llaman id_usuario e id_pelicula en la tabla rentas
                 # Insertar una renta
                 sql_renta = "INSERT INTO rentar (idUsuario, idPelicula, fecha_renta) VALUES (%s, %s, NOW())"
                 cursor.execute(sql_renta, (id_usuario, id_pelicula))
@@ -47,6 +50,7 @@ def insertar_registros():
     except MySQLError as e:
         print(f"Error al insertar registros: {e}")
 
+# Función que regresa los usuarios con apellido con cierta terminación, por parámetro
 def filtrar_usuarios_por_apellido(apellido):
     try:
         with closing(pymysql.connect(**db_params)) as conn:
@@ -59,7 +63,7 @@ def filtrar_usuarios_por_apellido(apellido):
     except MySQLError as e:
         print(f"Error al filtrar usuarios por apellido: {e}")
 
-
+# Función para cambiar el género de una película, por parámetro
 def cambiar_genero_pelicula_por_nombre(nombre_pelicula, nuevo_genero):
     try:
         with closing(pymysql.connect(**db_params)) as conn:
@@ -78,7 +82,7 @@ def cambiar_genero_pelicula_por_nombre(nombre_pelicula, nuevo_genero):
     except MySQLError as e:
         print(f"Error al cambiar género de la película: {e}")
 
-
+# Función que elimina las antiguas rentas con más de 3 días
 def eliminar_rentas_antiguas():
     try:
         with closing(pymysql.connect(**db_params)) as conn:
