@@ -1,16 +1,17 @@
-from sqlalchemy.ext.declarative import declarative_base
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, LargeBinary, Boolean
 
-Base = declarative_base()
+db = SQLAlchemy()
 
-class Usuario(Base):
+class Usuario(db.Model):
     __tablename__ = 'usuarios'
-    idUsuario = Column(Integer, primary_key=True)
-    nombre = Column(String(200))
-    password = Column(String(64))
-    email = Column(String(500))
-    profilePicture = Column(LargeBinary)
-    superUser = Column(Boolean)
+    idUsuario = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String(200), nullable=False)
+    password = Column(String(64), nullable=False)
+    email = Column(String(500), nullable=True, unique=True)
+    profilePicture = Column(LargeBinary, nullable=True)
+    superUser = Column(Boolean, nullable=True, default=False)
+
 
     def __repr__(self):
         return f"<Usuario(idUsuario={self.idUsuario}, nombre={self.nombre})>"
