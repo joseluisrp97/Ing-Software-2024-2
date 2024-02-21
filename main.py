@@ -1,21 +1,26 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from sqlalchemy import create_engine
 from models.usuarios import db
+from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
-# Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://lab:Developer123!@localhost/lab_ing_software'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://lab:Developer123!@localhost:3306/lab_ing_software'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config.from_mapping(
-    SECRET_KEY='dev'
-)
+DATABASE_URL = app.config['SQLALCHEMY_DATABASE_URI']
 db.init_app(app)
+engine = create_engine(DATABASE_URL)
+Session = sessionmaker(bind=engine)
 
+# Crear una sesión
+session = Session()
 # Importación de modelos después de la inicialización de la base de datos
 from models.usuarios import Usuario
 from models.peliculas import Pelicula
 from models.rentar import Rentar
+
+# Crear una sesión
+session = Session()
 
 # Función para ver registros en una tabla
 def ver_registros():
@@ -26,15 +31,15 @@ def ver_registros():
     tabla = input("Seleccione una opción: ")
 
     if tabla == '1':
-        usuarios = Usuario.query.all()
+        usuarios = session.query(Usuario).all()
         for usuario in usuarios:
             print(usuario)
     elif tabla == '2':
-        peliculas = Pelicula.query.all()
+        peliculas = session.query(Pelicula).all()
         for pelicula in peliculas:
             print(pelicula)
     elif tabla == '3':
-        rentas = Rentar.query.all()
+        rentas = session.query(Rentar).all()
         for renta in rentas:
             print(renta)
     else:
@@ -51,13 +56,13 @@ def filtrar_por_id():
 
     try:
         if tabla == '1':
-            usuario = Usuario.query.filter_by(idUsuario=id_seleccionado).first()
+            usuario = session.query(Usuario).filter(Usuario.idUsuario == id_seleccionado).first()
             print(usuario if usuario else "Usuario no encontrado.")
         elif tabla == '2':
-            pelicula = Pelicula.query.filter_by(idPelicula = id_seleccionado).first()
+            pelicula = session.query(Pelicula).filter(Pelicula.idPelicula == id_seleccionado).first()
             print(pelicula if pelicula else "Película no encontrada.")
         elif tabla == '3':
-            renta = Rentar.query.filter_by(idRentar = id_seleccionado).first()
+            renta = session.query(Rentar).filter(Rentar.idRentar == id_seleccionado).first()
             print(renta if renta else "Renta no encontrada.")
         else:
             print("Opción no válida.")
@@ -75,31 +80,31 @@ def actualizar_registro():
 
     if tabla == '1':
         nuevo_nombre = input("Ingrese el nuevo nombre del usuario: ")
-        usuario = Usuario.query.filter(idUsuario = id_seleccionado).first()
+        usuario = session.query(Usuario).filter(Usuario.idUsuario == id_seleccionado).first()
         if usuario:
             usuario.nombre = nuevo_nombre
-            db.session.commit()
+            session.commit()
             print("Usuario actualizado con éxito.")
         else:
             print("Usuario no encontrado.")
 
     elif tabla == '2':
         nuevo_nombre = input("Ingrese el nuevo nombre de la película: ")
-        pelicula = Pelicula.query.filter_by(idPelicula = id_seleccionado).first()
+        pelicula = session.query(Pelicula).filter(Pelicula.idPelicula == id_seleccionado).first()
         if pelicula:
             pelicula.nombre = nuevo_nombre
-            db.session.commit()
+            session.commit()
             print("Película actualizada con éxito.")
         else:
             print("Película no encontrada.")
 
     elif tabla == '3':
         nueva_fecha = input("Ingrese la nueva fecha de renta (YYYY-MM-DD): ")
-        renta = Rentar.query.filter_by(idRentar = id_seleccionado).first()
+        renta = session.query(Rentar).filter(Rentar.idRentar == id_seleccionado).first()
         if renta:
             from datetime import datetime
             renta.fecha_renta = datetime.strptime(nueva_fecha, "%Y-%m-%d")
-            db.session.commit()
+            session.commit()
             print("Fecha de renta actualizada con éxito.")
         else:
             print("Renta no encontrada.")
@@ -120,31 +125,31 @@ def eliminar_registro():
             confirmacion = input("Está seguro que desea eliminar TODOS los registros? (s/n): ")
             if confirmacion.lower() == 's':
                 if tabla == '1':
-                    Usuario.query.delete()
+                    session.query(Usuario).delete()
                 elif tabla == '2':
-                    Pelicula.query.delete()
+                    session.query(Pelicula).delete()
                 elif tabla == '3':
-                    Rentar.query.delete()
-                db.session.commit()
+                    session.query(Rentar).delete()
+                session.commit()
                 print("Todos los registros han sido eliminados.")
         else:
             if tabla == '1':
-                usuario = Usuario.query.filter(idUsuario = id_seleccionado).first()
+                usuario = session.query(Usuario).filter(Usuario.idUsuario == id_seleccionado).first()
                 if usuario:
-                    db.session.delete(usuario)
-                    db.session.commit()
+                    session.delete(usuario)
+                    session.commit()
                     print("Usuario eliminado con éxito.")
             elif tabla == '2':
-                pelicula = Pelicula.query.filter_by(idPelicula = id_seleccionado).first()
+                pelicula = session.query(Pelicula).filter(Pelicula.idPelicula == id_seleccionado).first()
                 if pelicula:
-                    db.session.delete(pelicula)
-                    db.session.commit()
+                    session.delete(pelicula)
+                    session.commit()
                     print("Película eliminada con éxito.")
             elif tabla == '3':
-                renta = Rentar.query.filter_by(idRentar = id_seleccionado).first()
+                renta = session.query(Rentar).filter(Rentar.idRentar == id_seleccionado).first()
                 if renta:
-                    db.session.delete(renta)
-                    db.session.commit()
+                    session.delete(renta)
+                    session.commit()
                     print("Renta eliminada con éxito.")
     else:
         print("Opción no válida.")
@@ -177,4 +182,5 @@ def menu():
 if __name__ == "__main__":
     menu()
 
-
+# Se cierra la sesión
+session.close()
