@@ -25,19 +25,21 @@ def insertar_registros():
     try:
         with closing(pymysql.connect(**db_params)) as conn:
             with conn.cursor() as cursor:
-                # Generar un nombre, email y contraseña aleatorios
-                nombre_aleatorio = fake.name()  # Genera un nombre completo aleatorio
-                email_aleatorio = f"{nombre_aleatorio.split(' ')[0].lower()}.{datetime.now().strftime('%Y%m%d%H%M%S')}@example.com"
+                # Generar un nombre, apellidos, email y contraseña aleatorios
+                nombre_aleatorio = fake.first_name()
+                apPat_aleatorio = fake.last_name()
+                apMat_aleatorio = fake.last_name()
+                email_aleatorio = f"{nombre_aleatorio.lower()}.{apPat_aleatorio.lower()}_{datetime.now().strftime('%Y%m%d%H%M%S')}@example.com"
                 password_aleatorio = secrets.token_hex(8)  # Genera una contraseña aleatoria segura
 
                 # Insertar un usuario con los datos aleatorios
-                sql_usuario = "INSERT INTO usuarios (nombre, password, email, superUser) VALUES (%s, %s, %s, %s)"
-                cursor.execute(sql_usuario, (nombre_aleatorio, password_aleatorio, email_aleatorio, 0))
+                sql_usuario = "INSERT INTO usuarios (nombre, apPat, apMat, password, email, superUser) VALUES (%s, %s, %s, %s, %s, %s)"
+                cursor.execute(sql_usuario, (nombre_aleatorio, apPat_aleatorio, apMat_aleatorio, password_aleatorio, email_aleatorio, 0))
                 id_usuario = cursor.lastrowid
 
                 genero_aleatorio = random.choice(generos_peliculas)
 
-                # Insertar una película con genero aleatorio
+                # Insertar una película con género aleatorio
                 sql_pelicula = "INSERT INTO peliculas (nombre, genero, duracion, inventario) VALUES (%s, %s, %s, %s)"
                 cursor.execute(sql_pelicula, (fake.word().capitalize(), genero_aleatorio, 120, 10))
                 id_pelicula = cursor.lastrowid
@@ -55,13 +57,14 @@ def filtrar_usuarios_por_apellido(apellido):
     try:
         with closing(pymysql.connect(**db_params)) as conn:
             with conn.cursor() as cursor:
-                sql = "SELECT * FROM usuarios WHERE nombre LIKE %s"
-                cursor.execute(sql, ('%' + apellido,))
+                sql = "SELECT * FROM usuarios WHERE apPat LIKE %s OR apMat LIKE %s"
+                cursor.execute(sql, ('%' + apellido, '%' + apellido))
                 resultados = cursor.fetchall()
                 for usuario in resultados:
                     print(usuario)
     except MySQLError as e:
         print(f"Error al filtrar usuarios por apellido: {e}")
+
 
 # Función para cambiar el género de una película, por parámetro
 def cambiar_genero_pelicula_por_nombre(nombre_pelicula, nuevo_genero):
@@ -96,6 +99,6 @@ def eliminar_rentas_antiguas():
 
 # Ejemplo de uso de las funciones
 insertar_registros()
-filtrar_usuarios_por_apellido('ez')
+filtrar_usuarios_por_apellido('a')
 cambiar_genero_pelicula_por_nombre('Inception', 'Accion')
 eliminar_rentas_antiguas()
