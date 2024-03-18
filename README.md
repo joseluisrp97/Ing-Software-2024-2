@@ -1,10 +1,3 @@
-# Ingeniería de Software 2024-2
-Repositorio oficial de la materia de Ingenieria de Software de la Facultad de Ciencias de la UNAM del semestre 2024-2
-
-## Profesores:
-
-- Francisco Valdes Souto
-- Valeria Garcia Landa
-- Fernando Fong
-- Erick Martínez Piza
-- Adriana Hernandez Gasca
+José Luis Raya Pérez
+*Nota
+Trabajé en la base de datos "lab_ing_software" creada en la práctica pasada. Aún así como último commit cambié la línea del código para que se conecte a la base "ing_soft" que supongo uds tienen.
