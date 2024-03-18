@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Películas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        h1 {
+            color: #333;
+        }
+        a.agregar-pelicula {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .btn {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: white;
+        }
+        .btn-editar {
+            background-color: #f0ad4e;
+        }
+        .btn-eliminar {
+            background-color: #d9534f;
+            border: none;
+            cursor: pointer;
+            color: white;
+        }
+        form.eliminar {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Películas</h1>
+    <a href="{{ url_for('pelicula.agregar_pelicula') }}" class="agregar-pelicula">Agregar Película</a>
+    <div style="text-align: center; margin-top: 20px;">
+    <a href="{{ url_for('inicio') }}" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Volver a la página principal</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Género</th>
+                <th>Duración (min)</th>
+                <th>Inventario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pelicula in peliculas %}
+            <tr>
+                <td>{{ pelicula.idPelicula }}</td>
+                <td>{{ pelicula.nombre }}</td>
+                <td>{{ pelicula.genero }}</td>
+                <td>{{ pelicula.duracion }}</td>
+                <td>{{ pelicula.inventario }}</td>
+                <td>
+                    <a href="{{ url_for('pelicula.editar_pelicula', idPelicula=pelicula.idPelicula) }}" class="btn btn-editar">Editar</a>
+                    <form action="{{ url_for('pelicula.eliminar_pelicula', idPelicula=pelicula.idPelicula) }}" method="post" class="eliminar" onsubmit="return confirm('Se eliminará la película. ¿Está de acuerdo?');">
+                        <input type="submit" value="Eliminar" class="btn btn-eliminar">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

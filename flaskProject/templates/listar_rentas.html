@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Rentas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        a.agregar-renta {
+            display: inline-block;
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #337ab7;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .vencida, .vencida > td {
+            color: red;
+            font-weight: bold;
+        }
+        .btn-editar-estado {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            background-color: #f0ad4e;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Rentas</h1>
+    <a href="{{ url_for('rentar.agregar_renta') }}" class="agregar-renta">Agregar Renta</a>
+   <div style="text-align: center; margin-top: 20px;">
+    <a href="{{ url_for('inicio') }}" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Volver a la página principal</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Renta</th>
+                <th>ID Usuario</th>
+                <th>ID Película</th>
+                <th>Fecha de Renta</th>
+                <th>Días de Renta</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for renta in rentas %}
+            <tr class="{{ 'vencida' if renta.vencida else '' }}">
+                <td>{{ renta.idRentar }}</td>
+                <td>{{ renta.idUsuario }}</td>
+                <td>{{ renta.idPelicula }}</td>
+                <td>{{ renta.fecha_renta.strftime('%Y-%m-%d') }}</td>
+                <td>{{ renta.dias_de_renta }}</td>
+                <td>{{ 'Entregada' if renta.estatus else 'Rentada' }}</td>
+                <td>
+                    <a href="{{ url_for('rentar.actualizar_renta', idRentar=renta.idRentar) }}" class="btn-editar-estado">Editar Status</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

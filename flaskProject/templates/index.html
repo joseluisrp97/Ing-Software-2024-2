@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cine Manager</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding-top: 50px;
+            margin: 0;
+            color: #333;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 50px;
+        }
+        .links a {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            font-size: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .links a:hover, .links a:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        .footer {
+            margin-top: 100px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido a Cine Manager</h1>
+    <div class="links">
+        <a href="{{ url_for('usuario.listar_usuarios') }}">Usuarios</a>
+        <a href="{{ url_for('pelicula.listar_peliculas') }}">Películas</a>
+        <a href="{{ url_for('rentar.listar_rentas') }}">Rentas</a>
+    </div>
+    <div class="footer">
+        Desarrollado por Jose Luis Raya Pérez
+    </div>
+</body>
+</html>

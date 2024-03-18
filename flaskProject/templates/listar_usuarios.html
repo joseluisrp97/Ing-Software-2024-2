@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Usuarios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        a.agregar-usuario {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .btn-editar, .btn-eliminar {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+        }
+        .btn-editar {
+            background-color: #f0ad4e;
+        }
+        .btn-eliminar {
+            background-color: #d9534f;
+        }
+        form.eliminar-usuario {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Usuarios</h1>
+    <a href="{{ url_for('usuario.agregar_usuario') }}" class="agregar-usuario">Agregar Usuario</a>
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="{{ url_for('inicio') }}" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Volver a la página principal</a>
+  </div>
+  <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Email</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.idUsuario }}</td>
+                <td>{{ usuario.nombre }}</td>
+                <td>{{ usuario.apPat }}</td>
+                <td>{{ usuario.apMat }}</td>
+                <td>{{ usuario.email }}</td>
+
+                <td>
+                    <a href="{{ url_for('usuario.editar_usuario', idUsuario=usuario.idUsuario) }}" class="btn-editar">Editar</a>
+                    <form action="{{ url_for('usuario.eliminar_usuario', idUsuario=usuario.idUsuario) }}" method="post" class="eliminar-usuario" onsubmit="return confirm('Se eliminará el usuario. ¿Está de acuerdo?');">
+                        <input type="submit" value="Eliminar" class="btn-eliminar">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

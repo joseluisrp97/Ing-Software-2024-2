@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Película</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+            color: #666;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        a {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form action="{{ url_for('pelicula.editar_pelicula', idPelicula=pelicula.idPelicula) }}" method="post">
+        <h1>Editar Película</h1>
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" value="{{ pelicula.nombre }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="genero">Género:</label>
+            <input type="text" id="genero" name="genero" value="{{ pelicula.genero }}">
+        </div>
+
+        <div class="form-group">
+            <label for="duracion">Duración (en minutos):</label>
+            <input type="number" id="duracion" name="duracion" value="{{ pelicula.duracion }}">
+        </div>
+
+        <div class="form-group">
+            <label for="inventario">Inventario:</label>
+            <input type="number" id="inventario" name="inventario" value="{{ pelicula.inventario }}" required>
+        </div>
+
+        <input type="submit" value="Guardar Cambios">
+        <a href="{{ url_for('pelicula.listar_peliculas') }}">Volver a la lista de peliculas</a>
+
+    </form>
+</body>
+</html>
