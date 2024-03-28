@@ -1,0 +1,81 @@
+.crud-clientes {
+    font-family: 'Arial', sans-serif;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .agregar-cliente, .lista-clientes {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .agregar-cliente input, .agregar-cliente select, .lista-clientes input, .lista-clientes select {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .agregar-cliente button, .lista-clientes button {
+    padding: 10px 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .agregar-cliente button:hover, .lista-clientes button:hover {
+    background-color: #0056b3;
+  }
+  
+  .cliente {
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .cliente div {
+    margin: 5px 0;
+  }
+  
+  .lista-clientes button {
+    margin-right: 5px;
+    padding: 8px 12px;
+  }
+  
+  button.editar, button.cancelar {
+    background-color: #ffc107; 
+  }
+  
+  button.eliminar {
+    background-color: #dc3545; 
+  }
+  
+  button.guardar {
+    background-color: #28a745; 
+  }
+  
+  button.editar:hover, button.cancelar:hover {
+    background-color: #e0a800;
+  }
+  
+  button.eliminar:hover {
+    background-color: #c82333;
+  }
+  
+  button.guardar:hover {
+    background-color: #218838;
+  }
+  
